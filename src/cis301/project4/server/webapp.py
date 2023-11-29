@@ -8,14 +8,13 @@ from hashlib import md5
 from pathlib import Path
 
 from cis301.project4.phonecall import PhoneCall
-from cis301.project4.server.DAO import DAO
+from cis301.project4.server.PhoneBillServer import PhoneBillServer
 from flask import Flask, request, redirect, render_template, g, session
 from flask_bootstrap import Bootstrap
 
 from cis301.project4.util import Util
 
-app = DAO( __name__ )
-
+app = PhoneBillServer( __name__ )
 
 def run(port=8000, file="database.txt"):
     app.set_port(port)

@@ -1,4 +1,6 @@
 import sys
+
+from cis301.project4.client.cli_client import PhoneBillClient
 from cis301.project4.server import webapp
 
 server = object()
@@ -18,7 +20,50 @@ def main(args=None):
 
 
 def run_client(argv):
-    pass
+    # HW: DO NOT GET ANY INPUT FROM THE USER, USE THE SYS.ARGV AND THEN CALL TEH FUNCTION
+    # DIFF FUNCTIONS REQUIRE DIFF INOUT SO VERIFY THE CORRECT INPUT IS RECEIVED
+    user_input = sys.argv
+    if user_input[1] == "print":
+        pass
+        #increment all by 1
+    operation: str = user_input[4]
+
+    if not len(user_input) >= 5:
+        exit(0)
+    phonebill = PhoneBillClient()
+    phonebill.set_username(user_input[2])  # change to 2 & 3,
+    phonebill.set_password(user_input[3])
+    if operation == "add":
+        phone_call = user_input[5:]
+        function = phonebill.add_phonecall(phone_call)
+        print(function)
+
+    if operation == "delete":
+        phone_call_id = user_input[5]
+        function = phonebill.delete(phone_call_id)  # phonecallid
+        print(function)
+
+    if operation == "update":
+        phone_call_id = user_input[5]
+        phone_call = user_input[6:]
+        function = phonebill.update(phone_call_id,phone_call)  # phonecall,phonecallid
+        print(function)
+
+    if not len(user_input) >= 4:
+        exit(0)
+
+    if user_input[4] == "search":
+        operation = user_input[5]
+        if operation == "caller":
+            caller = user_input[5]
+            callee = user_input[6]
+            function = phonebill.search(caller,callee)
+            print(function)
+        if operation == "start-date":
+            start_date = user_input[5]
+            end_date = user_input[6]
+            function = phonebill.search(start_date,end_date)
+            print(function)
 
 def run_server(argv):
     if '--client' in argv:
@@ -98,4 +143,10 @@ def usage():
     return help
 
 if __name__ == "__main__":
-    main()
+    main() #making call
+    #building a web server, waiting for the request (any network traffic) using flask framewok (web server)
+    #creating a web application thtat runs on a web server/whatevr http request
+    '''
+    1. how to get a hold of the request
+    2. define the pattern on how to serve it - using the python decorator(injection/runtime injection)
+    '''

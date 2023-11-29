@@ -1,5 +1,6 @@
 #TODO Implement the client application
 import json
+import sys
 
 import requests
 
@@ -12,8 +13,8 @@ class PhoneBillClient():
     def __init__(self, hostname="localhost", port="8000"):
         self.__host = hostname
         self.__port = port
-        self.__uname = username
-        self.__password = password
+        self.__uname = None
+        self.__password = None
 
 
     def get_username(self):
@@ -31,8 +32,7 @@ class PhoneBillClient():
     def register_user(self):
         pass
 
-
-    def add_phonecall(self, phonecall):
+    def add_phonecall(self, phone_call):
         # convert data to JSON
         phonecallJSON = Util.phonecallToJSON(phonecall, True)
         #generate a request
@@ -52,7 +52,29 @@ class PhoneBillClient():
 
         #check response
         print(res)
-        print( res.text )
+        print( res.text )#\
+    def delete(self,phone_call_id):
+        url = 'http://' + self.__host + ':' + self.__port + '/auth'
+        data = {"email": f"{self.__uname}", "password": f"{self.__password}", "client": True}
+
+        headers = {'content-type': 'application/json', }
+        auth_res = requests.post(url, data=json.dumps(data), headers=headers)
+
+        # check response
+        print(auth_res)
+        print(auth_res.text)
+        # send request (POST)
+        url = 'http://' + self.__host + ':' + self.__port + '/user/add'
+        res = requests.post(url, data=json.dumps(phonecallJSON), cookies=auth_res.cookies, headers=headers)
+
+        # check response
+        print(res)
+        print(res.text)  # \
+
+    def update(self,phone_call_id, phone_call):
+        return "Operation unavailable"
+    def search(self):
+        pass
 
 
 
@@ -64,5 +86,9 @@ if __name__== '__main__':
     pbc.set_username(username)
     pbc.set_password(password)
     pbc.add_phonecall(phonecall)
+
+
+
+
 
 

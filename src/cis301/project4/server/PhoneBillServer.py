@@ -3,7 +3,7 @@ import os
 import pathlib
 from datetime import datetime
 
-from cis301.project4.server.db.sqlite_DAO import PhoneBill_DAO
+from cis301.project4.server.db.sqlite_dao import PhoneBill_DAO
 from flask import Flask, request, redirect, render_template, g, session
 from flask_bootstrap import Bootstrap
 
@@ -12,11 +12,11 @@ class PhoneBillServer(Flask):
         super().__init__(import_name, instance_path=pathlib.Path(__file__).parent.absolute())
         self.__port = port
         self.__host = host
-        self.__datalocation = os.path.join(self.instance_path, 'data')
+        self.__datalocation = os.path.join(self.instance_path, 'data') #judt add the data to get the location/if you dont know what system your user will user
         self.__file =  os.path.join(self.__datalocation, file)
         self.__userdb = os.path.join(self.__datalocation, "userdb.txt")
         self.__dbfilename = "phonebill.db"
-        self.__db = PhoneBill_DAO(os.path.join(self.__datalocation, self.__dbfilename))
+        self.__db = PhoneBill_DAO(os.path.join(self.__datalocation, self.__dbfilename)) #absolute path reardless of
 
     def set_file(self, file):
         self.file = self.__datalocation + file
@@ -46,7 +46,7 @@ class PhoneBillServer(Flask):
 
         # store the data file and return success or failure
 
-    def remove_phonecall(self, phonecall_id):
+    def remove_phonecall(self, phonecall_id): #do we define the functions here and then call them in the parser and dumper?
         # TODO
         raise NotImplementedError( " Cannot register user!" )
 
