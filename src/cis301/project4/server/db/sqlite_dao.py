@@ -4,6 +4,8 @@ from hashlib import md5
 
 from cis301.phonebill.phonebill_dao import AbstractPhoneBill_DAO
 from cis301.phonebill.phonecall_dao import AbstractPhoneCall_DAO
+from cis301.project4 import phonecall
+
 
 # TODO Finish Implementing the abstract methods
 
@@ -39,8 +41,14 @@ class PhoneBill_DAO(AbstractPhoneBill_DAO, AbstractPhoneCall_DAO):
         conn.close()
         return pid
 
-    def update_phonecall(self, phonecall):
-        pass
+    def update_phonecall(self, phonecall,phonecall_id):
+        conn = sqlite3.connect(self.dbfile)
+        c = conn.cursor()
+        data = (phonecall.get_caller(), phonecall.get_callee(), phonecall.get_starttime_string(),
+                phonecall.get_endtime_string(),phonecall_id)
+        c.execute('UPDATE phonecalls SET caller=?,callee=?, startdate=?, enddate=? WHERE id =? ',data)
+        conn.commit()
+        conn.close()
 
     def delete_phonecall(self, phonecall):
         pass
@@ -49,6 +57,13 @@ class PhoneBill_DAO(AbstractPhoneBill_DAO, AbstractPhoneCall_DAO):
         pass
 
     def search_phonecalls_bydate(self, startdate, enddate):
+        conn = sqlite3.connect(self.dbfile)
+        c = conn.cursor()
+        data = (phonecall.get_starttime_string(),phonecall.get_endtime_string())
+        c.execute('SELECT * FROM phonecalls  WHERE  startdate=? and enddate=? ', data)
+        conn.commit()
+        conn.close()
+    def search_phonecalls_bycaller(self, caller, callee):
         pass
 
     def search_phonecalls_bycustomername(self, customer_id):
@@ -90,6 +105,15 @@ class PhoneBill_DAO(AbstractPhoneBill_DAO, AbstractPhoneCall_DAO):
         conn = sqlite3.connect(self.dbfile)
         c = conn.cursor()
         c.execute('select * from users where users.email=?', (user["email"],))
+        rows =c.fetchone()
+        if rows:
+            return True
+        else:
+            return False
+    def is_valid_phone_id(self, phonecall_id):
+        conn = sqlite3.connect(self.dbfile)
+        c = conn.cursor()
+        c.execute('select * from phonecalls where phonecalls.id=?', (phonecall_id,))
         rows =c.fetchone()
         if rows:
             return True

@@ -32,8 +32,17 @@ def authenticate():
     print(f"text:{res.content}\n")
     return res
 def search_byname():
+    search_query = input("Enter a name: ")
+    url = "http://localhost:5000/auth"
+    headers = {'content-type': 'application/json'}
+    data = {"username": "admin", "password": "fall2023"}
+    res = requests.post(url, data=json.dumps(data), headers=headers)
+    url = "http://localhost:5000/search"+"?name"+search_query
 
+    res=requests.get(url,cookies=res.cookies,headers=headers)
+    print(res.content)
 
 if __name__ =='__main__':
-    print(authenticate())
-    post_examples()
+    # print(authenticate())
+    # post_examples()
+    print(search_byname())

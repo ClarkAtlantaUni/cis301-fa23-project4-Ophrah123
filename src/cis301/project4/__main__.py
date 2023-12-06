@@ -1,6 +1,7 @@
 import sys
 
 from cis301.project4.client.cli_client import PhoneBillClient
+from cis301.project4.phonecall import PhoneCall
 from cis301.project4.server import webapp
 
 server = object()
@@ -34,7 +35,13 @@ def run_client(argv):
     phonebill.set_username(user_input[2])  # change to 2 & 3,
     phonebill.set_password(user_input[3])
     if operation == "add":
-        phone_call = user_input[5:]
+        caller=user_input[5]
+        calle=user_input[6]
+        start_date=user_input[7]
+        end_date=user_input[8]
+
+        phone_call=PhoneCall(caller,calle,start_date,end_date)
+        #phone_call = user_input[5:]
         function = phonebill.add_phonecall(phone_call)
         print(function)
 
@@ -57,12 +64,12 @@ def run_client(argv):
         if operation == "caller":
             caller = user_input[5]
             callee = user_input[6]
-            function = phonebill.search(caller,callee)
+            function = phonebill.search_caller(caller,callee)
             print(function)
         if operation == "start-date":
             start_date = user_input[5]
             end_date = user_input[6]
-            function = phonebill.search(start_date,end_date)
+            function = phonebill.search_date(start_date,end_date)
             print(function)
 
 def run_server(argv):
