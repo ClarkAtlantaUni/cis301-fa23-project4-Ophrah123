@@ -35,7 +35,7 @@ class PhoneBillClient():
 
     def add_phonecall(self, phone_call):
         # convert data to JSON
-        phonecallJSON = Util.phonecallToJSON(phonecall, True)
+        phonecallJSON = Util.phonecallToJSON(phone_call, True)
         #generate a request
         #every request needs authentication
         url = 'http://' + self.__host + ':' + self.__port + '/auth'
@@ -129,7 +129,19 @@ class PhoneBillClient():
         # send request (POST)
         url = 'http://' + self.__host + ':' + self.__port + '/user/searchdate'
         res = requests.post(url, data=json.dumps(data), cookies=auth_res.cookies, headers=headers)
+        print(res)
         res = json.loads(res.text)['res']
+
+if __name__ == '__main__':
+    pass
+    # username = "admin@cau.edu"
+    # password = "1234"
+    # phonecall = PhoneCall('123-880-4567', '404-880-9632', '11/11/2020 15:10', '11/11/2020 15:25')
+    # pbc = PhoneBillClient()
+    # pbc.set_username(username)
+    # pbc.set_password(password)
+    # pbc.add_phonecall(phonecall)
+    # pbc.delete_phonecall(5)
 
 
 

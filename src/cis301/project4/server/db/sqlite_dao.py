@@ -50,21 +50,32 @@ class PhoneBill_DAO(AbstractPhoneBill_DAO, AbstractPhoneCall_DAO):
         conn.commit()
         conn.close()
 
-    def delete_phonecall(self, phonecall):
-        pass
+    def delete_phonecall(self, phone_call_id):
+        conn = sqlite3.connect(self.dbfile)
+        c = conn.cursor()
+        data = phone_call_id
+        c.execute('DELETE from phonecall where id=?;', data)
+        conn.commit()
+        c.execute('DELETE from phonebills where pid=?;', data)
+        conn.commit()
+        conn.close()
 
     def select_phonecall(self, phonecall_id):
         pass
 
-    def search_phonecalls_bydate(self, startdate, enddate):
+    def search_phonecalls_bydate(self, user, start_date, end_date):
         conn = sqlite3.connect(self.dbfile)
         c = conn.cursor()
-        data = (phonecall.get_starttime_string(),phonecall.get_endtime_string())
-        c.execute('SELECT * FROM phonecalls  WHERE  startdate=? and enddate=? ', data)
+        c.execute('select * from users where users.start_date=?, users.end_date=?', (user["start_date"],user["end_date"]))
+        return c.fetchone()
+    def search_phonecalls_bycaller(self, user, caller, callee):
+        #phonecall =phonecall(caller,callee)
+        conn = sqlite3.connect(self.dbfile)
+        c = conn.cursor()
+        c.execute('select * from users where users.caller=?,users.callee=?', (user["caller"],(user["callee"])))
+        return c.fetchone()
         conn.commit()
         conn.close()
-    def search_phonecalls_bycaller(self, caller, callee):
-        pass
 
     def search_phonecalls_bycustomername(self, customer_id):
         pass

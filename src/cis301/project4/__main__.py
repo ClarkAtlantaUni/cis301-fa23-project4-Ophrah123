@@ -17,56 +17,125 @@ def main(args=None):
     if len(args)<2:
         print( f">>> Project4. Missing command line arguments" )
         print(usage())
+    print(args)
     parse_cli_argv(args)
 
 
 def run_client(argv):
     # HW: DO NOT GET ANY INPUT FROM THE USER, USE THE SYS.ARGV AND THEN CALL TEH FUNCTION
     # DIFF FUNCTIONS REQUIRE DIFF INOUT SO VERIFY THE CORRECT INPUT IS RECEIVED
-    user_input = sys.argv
-    if user_input[1] == "print":
-        pass
-        #increment all by 1
-    operation: str = user_input[4]
-
-    if not len(user_input) >= 5:
-        exit(0)
+    user_input = argv
+    i=0
     phonebill = PhoneBillClient()
-    phonebill.set_username(user_input[2])  # change to 2 & 3,
-    phonebill.set_password(user_input[3])
-    if operation == "add":
-        caller=user_input[5]
-        calle=user_input[6]
-        start_date=user_input[7]
-        end_date=user_input[8]
+    if user_input[i] == "--print":
+        phonebill.set_username(user_input[2])
+        phonebill.set_password(user_input[3])
+        operation = user_input[i + 5]
+        if operation == "add":
+            caller = user_input[i+6]
+            calle = user_input[i+7]
+            start_date = user_input[i+8]
+            end_date = user_input[i+9]
 
-        phone_call=PhoneCall(caller,calle,start_date,end_date)
-        #phone_call = user_input[5:]
-        function = phonebill.add_phonecall(phone_call)
-        print(function)
+            phone_call = PhoneCall(caller, calle, start_date, end_date)
+            # phone_call = user_input[5:]
+            function = phonebill.add_phonecall(phone_call)
+            print(function)
 
-    if operation == "delete":
-        phone_call_id = user_input[5]
-        function = phonebill.delete(phone_call_id)  # phonecallid
-        print(function)
+        if operation == "delete":
+            phone_call_id = user_input[i+6]
+            function = phonebill.delete_phonecall(phone_call_id)  # phonecallid
+            print(function)
 
-    if operation == "update":
-        phone_call_id = user_input[5]
-        phone_call = user_input[6:]
-        function = phonebill.update(phone_call_id,phone_call)  # phonecall,phonecallid
-        print(function)
+        if operation == "update":
+            phone_call_id = user_input[i+6]
+            phone_call = user_input[i+7:]
+            function = phonebill.update_phonecall(phone_call, phone_call_id)  # phonecall,phonecallid
+            print(function)
 
-    if not len(user_input) >= 4:
-        exit(0)
+        if operation == "searchdate":
+            caller = user_input[i+6]
+            callee = user_input[i+7]
+            function = phonebill.search_caller(caller, callee)
+            print(function)
 
-    if user_input[4] == "search":
-        operation = user_input[5]
-        if operation == "caller":
+        if operation == "searchcaller":
+            start_date = user_input[i+6]
+            end_date = user_input[i+7]
+            function = phonebill.search_date(start_date, end_date)
+            print(function)
+
+    if user_input[i] == "--client":
+        phonebill.set_username(user_input[i+1])
+        phonebill.set_password(user_input[i+2])
+        operation = user_input[i+3]
+        if operation == "add":
+            caller = user_input[i+4]
+            calle = user_input[i+5]
+            start_date = user_input[i+6]
+            end_date = user_input[i+7]
+
+            phone_call = PhoneCall(caller, calle, start_date, end_date)
+            # phone_call = user_input[5:]
+            function = phonebill.add_phonecall(phone_call)
+            print(function)
+
+        if operation == "delete":
+            phone_call_id = user_input[i+4]
+            function = phonebill.delete_phonecall(phone_call_id)  # phonecallid
+            print(function)
+
+        if operation == "update":
+            phone_call_id = user_input[i+4]
+            phone_call = user_input[i+5:]
+            function = phonebill.update_phonecall(phone_call, phone_call_id)  # phonecall,phonecallid
+            print(function)
+
+        if operation == "searchdate":
+            caller = user_input[i+4]
+            callee = user_input[i+5]
+            function = phonebill.search_caller(caller, callee)
+            print(function)
+
+        if operation == "searchcaller":
+            start_date = user_input[i+4]
+            end_date = user_input[i+5]
+            function = phonebill.search_date(start_date, end_date)
+            print(function)
+
+    if len(user_input) >= 5:
+        operation: str = user_input[4]
+        phonebill.set_username(user_input[2])  # change to 2 & 3,
+        phonebill.set_password(user_input[3])
+        if operation == "add":
+            caller=user_input[5]
+            calle=user_input[6]
+            start_date=user_input[7]
+            end_date=user_input[8]
+
+            phone_call=PhoneCall(caller,calle,start_date,end_date)
+            #phone_call = user_input[5:]
+            function = phonebill.add_phonecall(phone_call)
+            print(function)
+
+        if operation == "delete":
+            phone_call_id = user_input[5]
+            function = phonebill.delete_phonecall(phone_call_id)  # phonecallid
+            print(function)
+
+        if operation == "update":
+            phone_call_id = user_input[5]
+            phone_call = user_input[6:]
+            function = phonebill.update_phonecall(phone_call,phone_call_id)  # phonecall,phonecallid
+            print(function)
+
+        if operation == "searchdate":
             caller = user_input[5]
             callee = user_input[6]
             function = phonebill.search_caller(caller,callee)
             print(function)
-        if operation == "start-date":
+
+        if operation == "searchcaller":
             start_date = user_input[5]
             end_date = user_input[6]
             function = phonebill.search_date(start_date,end_date)
@@ -150,7 +219,8 @@ def usage():
     return help
 
 if __name__ == "__main__":
-    main() #making call
+    args = ["--client", "admin@cau.edu", "1234", "searchcaller", '404-880-1234', '404-880-0000']
+    main(args) #making call
     #building a web server, waiting for the request (any network traffic) using flask framewok (web server)
     #creating a web application thtat runs on a web server/whatevr http request
     '''

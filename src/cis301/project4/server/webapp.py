@@ -121,7 +121,7 @@ def user_search():
         message = dict()
         message["date"] = datetime.now().strftime( '%Y' )
         message["username"] = session['user']
-        message["text"] = "Welcome " + session['user']+ ". The seach function will be available soon!"
+        message["text"] = "Welcome " + session['user']+ ". The search function will be available soon!"
         return render_template('index.html', message=message)
     else:
         redirect('/auth')
@@ -196,7 +196,7 @@ def delete_phonecall():
             return '{"res":"401", "text":"Auth failed"}'
     else:
         return '{"res":"401", "text":"Method not supported"}'
-@app.route("/user/add", methods=["GET", "POST"])
+@app.route("/user/update", methods=["GET", "POST"])
 def update_phonecall():
     if request.method == 'GET':
         # TODO: load the form from the template
@@ -209,18 +209,18 @@ def update_phonecall():
         if session.get('user') and session.get('uid'):
             # contains phonecall info
             data = request.json
-            phonecall_id = data['phone_call_id']
+            phone_call_id = data['phone_call_id']
             caller = data['caller']
             callee = data['callee']
-            startdate = data['startdate']
-            enddate = data['enddate']
+            start_date = data['start_date']
+            end_date = data['end_date']
             # check and validate user data
             message = ""
             if Util.isValidPhoneNumber(caller) and Util.isValidPhoneNumber(callee):
-                if app.get_userdb().is_valid_phone_id(phonecall_id):
-                    phonecall = PhoneCall(callee, caller, startdate, enddate)
+                if app.get_userdb().is_valid_phone_id(phone_call_id):
+                    phonecall = PhoneCall(callee, caller, start_date, end_date)
                     phonecall.set_uid(session.get('uid'))
-                    app.get_userdb().update_phonecall(phonecall,phonecall_id)
+                    app.get_userdb().update_phonecall(phonecall,phone_call_id)
 
                     # add the new phone call to the database
                     print(phonecall)
@@ -237,16 +237,81 @@ def update_phonecall():
             return '{"res":"401", "text":"Auth failed"}'
     else:
         return '{"res":"401", "text":"Method not supported"}'
-@app.route('/user/search')
+@app.route('/user/searchdate')
 def search_date():
-    if session.get('user') and session.get('uid'):
-        message = dict()
-        message["date"] = datetime.now().strftime('%Y')
-        message["username"] = session['user']
-        message["text"] = "Welcome " + session['user'] + ". Please enter date to search!"
-        return render_template('index.html', message=message)
+    if request.method == 'GET':
+        # TODO: load the form from the template
+        if session.get('user') and session.get('uid'):
+            return '{"res":"401", "text":"Not implemented"}'
+        else:
+            redirect('/auth')
+    # gather phone call info.
+    elif request.method == 'POST':
+        if session.get('user') and session.get('uid'):
+            # contains phonecall info
+            data = request.json
+            start_date = data['start_date']
+            end_date = data['end_date']
+
+            # check and validate user data
+            message = ""
+            if Util.isValidDate(start_date) and Util.isValidPhoneNumber(end_date):
+                if app.get_userdb().search_phonecalls_bydate(start_date,end_date):
+                    start_date=start_date
+                    end_date=end_date
+                    # phonecall.set_uid(session.get('uid'))
+                    #app.get_userdb().search_phonecalls_bydate(start_date,end_date)
+                    # if search is a success
+                    message = '{"res":"200", "text":"Phone Call found!"}'
+                else:
+                    message = '{"res":"200", "text":"Phone call not found. Try again!"}'
+
+            else:
+                message = '{"res":"400", "text":"invalid date format"}'
+
+            return message
+        else:
+            return '{"res":"401", "text":"Auth failed"}'
     else:
-        redirect('/auth')
+        return '{"res":"401", "text":"Method not supported"}'
+
+@app.route('/user/searchcaller')
+def search_caller():
+    if request.method == 'GET':
+        # TODO: load the form from the template
+        if session.get('user') and session.get('uid'):
+            return '{"res":"401", "text":"Not implemented"}'
+        else:
+            redirect('/auth')
+    # gather phone call info.
+    elif request.method == 'POST':
+        if session.get('user') and session.get('uid'):
+            # contains phonecall info
+            data = request.json
+            caller = data['caller']
+            callee = data['callee']
+
+            # check and validate user data
+            message = ""
+            if Util.isValidPhoneNumber(caller) and Util.isValidPhoneNumber(callee):
+                if app.get_userdb().search_phonecalls_bycaller(caller,callee):
+                    caller = caller
+                    callee = callee
+                    #phonecall.set_uid(session.get('uid'))
+                    #app.get_userdb().search_phonecalls_bydate(caller,callee)
+                    # if search is a success
+                    message = '{"res":"200", "text":"Phone Call found!"}'
+                else:
+                    message = '{"res":"200", "text":"Phone call not found. Try again!"}'
+
+            else:
+                message = '{"res":"400", "text":"invalid phone call attributes"}'
+
+            return message
+        else:
+            return '{"res":"401", "text":"Auth failed"}'
+    else:
+        return '{"res":"401", "text":"Method not supported"}'
 
 if __name__ == "__main__":
     run()
